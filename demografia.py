@@ -44,6 +44,7 @@ merged = gpd.sjoin(gdf, cell, how='left', op='within')
 
 dane_agreg = merged.dissolve(by = "index_right", aggfunc = "sum")
 
+#demografia ogólnie
 cell.loc[dane_agreg.index, 'TOT'] = dane_agreg.TOT.values
 
 ax = cell.plot(column = 'TOT', figsize = (12,8), cmap = 'viridis', vmax = 700000, edgecolor = 'grey', legend = True)
@@ -52,14 +53,31 @@ ax.set_axis_off()
 plt.axis('equal')
 plt.title('Liczba ludnosci w siatce')
 
-cell.loc[dane_agreg.index, 'MALE_0_14'] = dane_agreg.MALE_0_14.values
-
-ax2 = cell.plot(column = 'MALE_0_14', figsize = (12,8), cmap = 'viridis', vmax = 100000, edgecolor = 'grey', legend = True)
+#Zadanie pkt a
+cell.loc[dane_agreg.index, 'TOT_0_14'] = dane_agreg.TOT_0_14.values
+ax2 = cell.plot(column = 'TOT_0_14', figsize = (12,8), cmap = 'viridis', 
+                vmax = 150000, edgecolor = 'grey', legend = True)
 plt.autoscale(False)
 ax2.set_axis_off()
 plt.axis('equal')
-plt.title('Liczba ludnosci w wieku 1-14 lat w siatce')
+plt.title('Liczba ludnosci w wieku 1-14 lat')
 
+#Zadanie pkt b
+cell.loc[dane_agreg.index, 'TOT_15_64'] = dane_agreg.TOT_15_64.values
+ax3 = cell.plot(column = 'TOT_15_64', figsize = (12,8), cmap = 'viridis', 
+                vmax = 150000, edgecolor = 'grey', legend = True)
+plt.autoscale(False)
+ax3.set_axis_off()
+plt.axis('equal')
+plt.title('Liczba ludnosci w wieku 15-64 lat')
 
+#Zadanie pkt c
+cell.loc[dane_agreg.index, 'TOT_65__'] = dane_agreg.TOT_65__.values
+ax4 = cell.plot(column = 'TOT_65__', figsize = (12,8), cmap = 'viridis', 
+                vmax = 150000, edgecolor = 'grey', legend = True)
+plt.autoscale(False)
+ax4.set_axis_off()
+plt.axis('equal')
+plt.title('Liczba ludnosci w wieku 65 lat i powyżej')
 
 
