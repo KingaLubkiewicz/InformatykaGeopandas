@@ -7,16 +7,11 @@ Created on Tue May 11 20:01:34 2021
 import geopandas as gpd
 import numpy as np
 import matplotlib.pyplot as plt
+import shapely
 
 gdf_w = gpd.read_file('PD_STAT_GRID_CELL_2011.shp')
 
 gdf = gdf_w.to_crs("EPSG:4326")
-
-wojew = gpd.read_file('Województwa.shp', encoding='utf-8')
-woj = wojew[['JPT_NAZWA_', 'geometry']]
-wojewodztwa = woj.dissolve(by = 'JPT_NAZWA_')
-
-import shapely
 
 xmin, ymin, xmax, ymax = [13, 48, 25, 56]
 
@@ -31,12 +26,6 @@ for x0 in np.arange(xmin, xmax+cell_size, cell_size):
         grid_cells.append(shapely.geometry.box(x0, y0, x1, y1))
 
 cell = gpd.GeoDataFrame(grid_cells, columns=['geometry'])
-
-ax = gdf.plot(markersize = .1, figsize = (12,8), column = 'TOT', cmap='jet')
-
-plt.autoscale(False)
-cell.plot(ax=ax, facecolor="none", edgecolor='grey')
-ax.axis('off')
 
 merged = gpd.sjoin(gdf, cell, how='left', op='within')
 
@@ -105,6 +94,24 @@ plt.title('Liczba ludnosci męskiej w wieku 65 lat i powyżej')
 
 
 # punkt f
+dane_demograficzne = gdf_w[['TOT', 'geometry']]
 
+wojew = gpd.read_file('Województwa.shp', encoding='utf-8')
+wojew = wojew[['JPT_NAZWA_', 'geometry']]
+merged = gpd.sjoin(dane_demograficzne, wojew, how='left', op='within')
+dane_agreg = merged.dissolve(by = "index_right", aggfunc = "sum")
 
+#liczba ludnosci w wojewodztwach
+ax = dane_agreg.plot(column = 'TOT', cmap = 'viridis', edgecolor = 'grey', legend = True)
+ax.set_axis_off()
+plt.axis('equal')
+plt.title('Liczba ludnosci w wojewodztwach')
 
+#ratio w zależnoci od powierzchni
+powierzch = wojew.area/1000000
+ratio = dane_agreg.TOT.values/powierzch
+dane_agreg['ratio'] = ratio
+ax2 = dane_agreg.plot(column = 'ratio', cmap = 'viridis', edgecolor = 'grey', legend = True)
+ax2.set_axis_off()
+plt.axis('equal')
+plt.title('Liczba ludnosci w wojewodztwach w odniesieniu do powierzchni')
