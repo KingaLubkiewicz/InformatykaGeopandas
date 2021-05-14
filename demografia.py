@@ -12,11 +12,9 @@ gdf_w = gpd.read_file('PD_STAT_GRID_CELL_2011.shp')
 
 gdf = gdf_w.to_crs("EPSG:4326")
 
-wojew = gpd.read_file('Województwa.shp')
-
-wojew['centroid']=wojew.centroid
-
-#wojew.plot("TOT", legend=True)
+wojew = gpd.read_file('Województwa.shp', encoding='utf-8')
+woj = wojew[['JPT_NAZWA_', 'geometry']]
+wojewodztwa = woj.dissolve(by = 'JPT_NAZWA_')
 
 import shapely
 
@@ -34,11 +32,11 @@ for x0 in np.arange(xmin, xmax+cell_size, cell_size):
 
 cell = gpd.GeoDataFrame(grid_cells, columns=['geometry'])
 
-# ax = gdf.plot(markersize = .1, figsize = (12,8), column = 'TOT', cmap='jet')
+ax = gdf.plot(markersize = .1, figsize = (12,8), column = 'TOT', cmap='jet')
 
-# plt.autoscale(False)
-# cell.plot(ax=ax, facecolor="none", edgecolor='grey')
-# ax.axis('off')
+plt.autoscale(False)
+cell.plot(ax=ax, facecolor="none", edgecolor='grey')
+ax.axis('off')
 
 merged = gpd.sjoin(gdf, cell, how='left', op='within')
 
@@ -104,3 +102,9 @@ plt.autoscale(False)
 ax5.set_axis_off()
 plt.axis('equal')
 plt.title('Liczba ludnosci męskiej w wieku 65 lat i powyżej')
+
+
+# punkt f
+
+
+
