@@ -102,8 +102,8 @@ ax6.set_axis_off()
 plt.axis('equal')
 plt.title('liczba kobiet w wieku do 14 lat w siatce')
 
-cell.loc[dane_agreg.index, 'FEM_15_64'] = dane_agreg.FEM_16_64.values
-ax7 = cell.plot(column='FEM_16_64', figsize=(12, 8), cmap='viridis', 
+cell.loc[dane_agreg.index, 'FEM_15_64'] = dane_agreg.FEM_15_64.values
+ax7 = cell.plot(column='FEM_15_64', figsize=(12, 8), cmap='viridis', 
                vmax = 150000, edgecolor="grey", legend = True)
 plt.autoscale(False)
 ax7.set_axis_off()
