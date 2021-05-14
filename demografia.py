@@ -12,11 +12,9 @@ gdf_w = gpd.read_file('PD_STAT_GRID_CELL_2011.shp')
 
 gdf = gdf_w.to_crs("EPSG:4326")
 
-wojew = gpd.read_file('Województwa.shp')
-
-wojew['centroid']=wojew.centroid
-
-#wojew.plot("TOT", legend=True)
+wojew = gpd.read_file('Województwa.shp', encoding='utf-8')
+woj = wojew[['JPT_NAZWA_', 'geometry']]
+wojewodztwa = woj.dissolve(by = 'JPT_NAZWA_')
 
 import shapely
 
@@ -34,11 +32,11 @@ for x0 in np.arange(xmin, xmax+cell_size, cell_size):
 
 cell = gpd.GeoDataFrame(grid_cells, columns=['geometry'])
 
-# ax = gdf.plot(markersize = .1, figsize = (12,8), column = 'TOT', cmap='jet')
+ax = gdf.plot(markersize = .1, figsize = (12,8), column = 'TOT', cmap='jet')
 
-# plt.autoscale(False)
-# cell.plot(ax=ax, facecolor="none", edgecolor='grey')
-# ax.axis('off')
+plt.autoscale(False)
+cell.plot(ax=ax, facecolor="none", edgecolor='grey')
+ax.axis('off')
 
 merged = gpd.sjoin(gdf, cell, how='left', op='within')
 
@@ -60,7 +58,7 @@ ax2 = cell.plot(column = 'TOT_0_14', figsize = (12,8), cmap = 'viridis',
 plt.autoscale(False)
 ax2.set_axis_off()
 plt.axis('equal')
-plt.title('Liczba ludnosci w wieku 1-14 lat')
+plt.title('Liczba ludnosci w wieku 0-14 lat')
 
 #Zadanie pkt b
 cell.loc[dane_agreg.index, 'TOT_15_64'] = dane_agreg.TOT_15_64.values
@@ -79,5 +77,34 @@ plt.autoscale(False)
 ax4.set_axis_off()
 plt.axis('equal')
 plt.title('Liczba ludnosci w wieku 65 lat i powyżej')
+
+#Zadanie pkt d
+cell.loc[dane_agreg.index, 'MALE_0_14'] = dane_agreg.MALE_0_14.values
+ax5 = cell.plot(column = 'MALE_0_14', figsize = (12,8), cmap = 'viridis', 
+                vmax = 150000, edgecolor = 'grey', legend = True)
+plt.autoscale(False)
+ax5.set_axis_off()
+plt.axis('equal')
+plt.title('Liczba ludnosci męskiej w wieku 0-14 lat')
+          
+cell.loc[dane_agreg.index, 'MALE_15_64'] = dane_agreg.MALE_15_64.values
+ax5 = cell.plot(column = 'MALE_15_64', figsize = (12,8), cmap = 'viridis', 
+                vmax = 150000, edgecolor = 'grey', legend = True)
+plt.autoscale(False)
+ax5.set_axis_off()
+plt.axis('equal')
+plt.title('Liczba ludnosci męskiej w wieku 15-64 lat')
+
+cell.loc[dane_agreg.index, 'MALE_65__'] = dane_agreg.MALE_65__.values
+ax5 = cell.plot(column = 'MALE_65__', figsize = (12,8), cmap = 'viridis', 
+                vmax = 150000, edgecolor = 'grey', legend = True)
+plt.autoscale(False)
+ax5.set_axis_off()
+plt.axis('equal')
+plt.title('Liczba ludnosci męskiej w wieku 65 lat i powyżej')
+
+
+# punkt f
+
 
 
